@@ -30,6 +30,13 @@ if(isset($_GET['add'])){
     }
     if(isset($_GET['rd'])){
         $card = $_GET['rd'];
+        if($card == 1){
+            if($bdd->query('INSERT INTO `cards` (`cardNumber`, `cardTypesId`) VALUES ("' . $cardNumber . '", "' . $cardType . '")')){
+                echo "Record card inserted successfully";
+            }else{
+                echo "Error: " . $bdd->errorInfo();
+            }
+        }
     }else{
         $card = 0;
     }
@@ -44,13 +51,6 @@ if(isset($_GET['add'])){
 if($errorCount == 0 && isset($_GET['add'])){
     if($bdd->query('INSERT INTO `clients` (`firstName`, `lastName`, `birthDate`, `card`, `cardNumber`) VALUES ("' . $name . '", "' . $prenome . '", "' . $dateN . '", ' . $card . ', ' . $cardNumber . ')')){
         echo "Record client inserted successfully.\n";
-    }else{
-        echo "Error: " . $bdd->errorInfo();
-    }
-}
-if($card == 1){
-    if($bdd->query('INSERT INTO `cards` (`cardNumber`, `cardTypesId`) VALUES ("' . $cardNumber . '", "' . $cardType . '")')){
-        echo "Record card inserted successfully";
     }else{
         echo "Error: " . $bdd->errorInfo();
     }
@@ -76,10 +76,8 @@ if($card == 1){
     <label for="type">Ttype de carte de fidélité :</label>
     <select name="type" id="type">
     <?php
-    $count = 0;
     while ($data = $cardTypesResult->fetch()){
-        $count++;
-        echo "<option value='" . $count . "'>" . $data['type'] . "</option>";
+        echo "<option value='" . $data['id'] . "'>" . $data['type'] . "</option>";
     }
     ?>
     </select><br />

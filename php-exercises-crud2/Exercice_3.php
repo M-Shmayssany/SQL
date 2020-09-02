@@ -1,60 +1,47 @@
 <?php
 include './connection.php';
-$name;
-$prenome;
-$dateN;
-$card;
-$cardNumber;
-$cardType;
-$errorCount = 0;
-$cardTypesResult = $bdd->query("SELECT * FROM `cardTypes`");
+$showTypeID = $bdd->query("SELECT * FROM `showTypes`");
+$showGenres = $bdd->query("SELECT * FROM `genres`");
+$spectacle;
+$artiste;
+$date;
+$typeId;
+$genres1;
+$genres2;
+$genres3;
+$duration;
+$startTime;
+$table = array();
+while($data = $showGenres->fetch()){
+    array_push($table, $data);
+}
 
-if(isset($_GET['add'])){
-    if(isset($_GET['name'])){
-        $name = $_GET['name'];
-    }else{
-        echo  "Remplir le champ de nom";
-        $errorCount++;
-    }
-    if(isset($_GET['prénom'])){
-        $prenome = $_GET['prénom'];
-    }else{
-        echo  "Remplir le champ de prénom";
-        $errorCount++;
-    }
-    if(isset($_GET['date'])){
-        $dateN = $_GET['date'];
-    }else{
-        echo  "Remplir le champ de date";
-        $errorCount++;
-    }
-    if(isset($_GET['rd'])){
-        $card = $_GET['rd'];
-    }else{
-        $card = 0;
-    }
-    if(isset($_GET['cardNumber'])){
-        $cardNumber = $_GET['cardNumber'];
-        $cardNumber = !empty($cardNumber) ? $cardNumber : "NULL";
-    }
-    if(isset($_GET['type'])){
-        $cardType = $_GET['type'];
-    }
+if(isset($spectacle)){
+    $spectacle = $_GET['spectacle'];
+}else{
+    echo "Veuillez entrer le nom de spectacle."
 }
-if($errorCount == 0 && isset($_GET['add'])){
-    if($bdd->query('INSERT INTO `clients` (`firstName`, `lastName`, `birthDate`, `card`, `cardNumber`) VALUES ("' . $name . '", "' . $prenome . '", "' . $dateN . '", ' . $card . ', ' . $cardNumber . ')')){
-        echo "Record client inserted successfully.\n";
-    }else{
-        echo "Error: " . $bdd->errorInfo();
-    }
+if(isset($artiste)){
+    $artiste = $_GET['artiste'];
+}else{
+    echo "Veuillez entrer le nom de artiste."
 }
-if($card == 1){
-    if($bdd->query('INSERT INTO `cards` (`cardNumber`, `cardTypesId`) VALUES ("' . $cardNumber . '", "' . $cardType . '")')){
-        echo "Record card inserted successfully";
-    }else{
-        echo "Error: " . $bdd->errorInfo();
-    }
+if(isset($date)){
+    $date = $_GET['date'];
+}else{
+    echo "Veuillez entrer le date de spectacle."
 }
+if(isset($duration)){
+    $duration = $_GET['duration'];
+}else{
+    echo "Veuillez entrer le duration de la spectacle."
+}
+if(isset($startTime)){
+    $startTime = $_GET['startTime'];
+}else{
+    echo "Veuillez entrer le Heure de début de la spectacle."
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -65,26 +52,48 @@ if($card == 1){
 </head>
 <body>
     <form method="get" action="">
-    <label for="name">Name :</label>
-    <input type="text" name="name" placeholder="Entrez le nom"><br />
-    <label for="prénom">Prénom :</label>
-    <input type="text" name="prénom" placeholder="Entrez votre prénom."><br />
-    <label for="date">Date de naissance :</label>
-    <input type="date" name="date" placeholder="Entrez votre date de naissance."><br />
-    <label for="rd">Carte de fidélité :</label>
-    <input type="checkbox" name="rd" value="1"><br />
-    <label for="type">Ttype de carte de fidélité :</label>
-    <select name="type" id="type">
+    <label for="spectacle">Spectacle :</label>
+    <input type="text" name="spectacle" placeholder="Entrez le titre de spectacle"><br />
+    <label for="artiste">Artiste :</label>
+    <input type="text" name="artiste" placeholder="Entrez nom de l'artiste."><br />
+    <label for="date">Date :</label>
+    <input type="date" name="date" placeholder="Entrez le date."><br />
+    <label for="typeId">Type :</label>
+    <select name="typeId" id="typeId">
     <?php
-    $count = 0;
-    while ($data = $cardTypesResult->fetch()){
-        $count++;
-        echo "<option value='" . $count . "'>" . $data['type'] . "</option>";
+    while ($data = $showTypeID->fetch()){
+        echo "<option value='" . $data['id'] . "'>" . $data['type'] . "</option>";
     }
     ?>
     </select><br />
-    <label for="cardNumber">Numéro de carte de fidélité :</label>
-    <input type="text" name="cardNumber" placeholder ="Entrez le numéro de carte"><br />
+    <label for="genres1">Premiers genres :</label>
+    <select name="genres1" id="genres1">
+    <?php
+    foreach($table as $data){
+        echo "<option value='" . $data['id'] . "'>" . $data['genre'] . "</option>";
+    }
+    ?>
+    </select><br />
+    <label for="genres2">Seconds genres :</label>
+    <select name="genres2" id="genres2">
+    <?php
+    foreach($table as $data){
+        echo "<option value='" . $data['id'] . "'>" . $data['genre'] . "</option>";
+    }
+    ?>
+    </select><br />
+    <label for="genres3">Troisièmes genres :</label>
+    <select name="genres3" id="genres3">
+    <?php
+    foreach($table as $data){
+        echo "<option value='" . $data['id'] . "'>" . $data['genre'] . "</option>";
+    }
+    ?>
+    </select><br />
+    <label for="duration">Duration :</label>
+    <input type="time" name="duration"><br />
+    <label for="startTime">Start time :</label>
+    <input type="time" name="startTime"><br />
     <button type="submit" name="add" value="submit">Add</button>
     </form>
 </body>
