@@ -8,40 +8,73 @@ $date;
 $typeId;
 $genres1;
 $genres2;
-$genres3;
 $duration;
 $startTime;
+$count = 0;
 $table = array();
 while($data = $showGenres->fetch()){
     array_push($table, $data);
 }
-
-if(isset($spectacle)){
-    $spectacle = $_GET['spectacle'];
-}else{
-    echo "Veuillez entrer le nom de spectacle."
+if (isset($_POST['add'])){
+    if(isset($_POST['spectacle'])){
+        $spectacle = $_POST['spectacle'];
+    }else{
+        echo "Veuillez entrer le nom de spectacle.";
+        $count++;
+    }
+    if(isset($_POST['artiste'])){
+        $artiste = $_POST['artiste'];
+    }else{
+        echo "Veuillez entrer le nom de artiste.";
+        $count++;
+    }
+    if(isset($_POST['date'])){
+        $date = $_POST['date'];
+    }else{
+        echo "Veuillez entrer le date de spectacle.";
+        $count++;
+    }
+    if(isset($_POST['typeId'])){
+        $typeId = $_POST['typeId'];
+    }else{
+        echo "Veuillez entrer le date de spectacle.";
+        $count++;
+    }
+    if(isset($_POST['genres1'])){
+        $genres1 = $_POST['genres1'];
+    }else{
+        
+        $count++;
+    }
+    if(isset($_POST['genres2'])){
+        $genres2 = $_POST['genres2'];
+    }else{
+        
+        $count++;
+    }
+    if(isset($_POST['duration'])){
+        $duration = $_POST['duration'];
+        
+    }else{
+        echo "Veuillez entrer le duration de la spectacle.";
+        $count++;
+    }
+    if(isset($_POST['startTime'])){
+        $startTime = $_POST['startTime'];
+    }else{
+        echo "Veuillez entrer le Heure de début de la spectacle.";
+        $count++;
+    }
+    if($count == 0){
+        if($bdd->query('INSERT INTO `shows` 
+        (`title`, `performer`, `date`, `showTypesId`, `firstGenresId`, `secondGenreId`, `duration`, `startTime`)
+        VALUES ("' . $spectacle .  '", "' . $artiste .  '", "' . $date .  '", "' . $typeId .  '", "' . $genres1 .  '", "' . $genres2 .  '", "' . $duration .  '", "' . $startTime .  '")')){
+            echo "L'enregistrement a été affecté avec succès.";
+        }else{
+            echo "Error : " . print_r($bdd->error);
+        }
+    }
 }
-if(isset($artiste)){
-    $artiste = $_GET['artiste'];
-}else{
-    echo "Veuillez entrer le nom de artiste."
-}
-if(isset($date)){
-    $date = $_GET['date'];
-}else{
-    echo "Veuillez entrer le date de spectacle."
-}
-if(isset($duration)){
-    $duration = $_GET['duration'];
-}else{
-    echo "Veuillez entrer le duration de la spectacle."
-}
-if(isset($startTime)){
-    $startTime = $_GET['startTime'];
-}else{
-    echo "Veuillez entrer le Heure de début de la spectacle."
-}
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -51,7 +84,7 @@ if(isset($startTime)){
     <title>php-exercises-crud2</title>
 </head>
 <body>
-    <form method="get" action="">
+    <form method="post" action="">
     <label for="spectacle">Spectacle :</label>
     <input type="text" name="spectacle" placeholder="Entrez le titre de spectacle"><br />
     <label for="artiste">Artiste :</label>
@@ -82,19 +115,11 @@ if(isset($startTime)){
     }
     ?>
     </select><br />
-    <label for="genres3">Troisièmes genres :</label>
-    <select name="genres3" id="genres3">
-    <?php
-    foreach($table as $data){
-        echo "<option value='" . $data['id'] . "'>" . $data['genre'] . "</option>";
-    }
-    ?>
-    </select><br />
     <label for="duration">Duration :</label>
     <input type="time" name="duration"><br />
     <label for="startTime">Start time :</label>
     <input type="time" name="startTime"><br />
-    <button type="submit" name="add" value="submit">Add</button>
+    <button type="submit" name="add" value="submit">Ajouter</button>
     </form>
 </body>
 </html>
